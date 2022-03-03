@@ -42,8 +42,8 @@ int search(int queenPlaced[], int N, int currentRow){
         return 1;
     }
     int subResult = 0;
-    int newQueenPlaced[N];
-    for (int i = 0; i < N ; i++){
+    int newQueenPlaced[(currentRow+1)];
+    for (int i = 0; i < currentRow ; i++){
         newQueenPlaced[i] = queenPlaced[i];
     }
 

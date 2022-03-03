@@ -5,9 +5,7 @@
 #include <omp.h>
 
 int search(int queenPlaced[], int N, int currentRow);
-void showIntArray(int queenPlaced[], int N);
 bool tryNewQueen();
-void test();
 
 int main(int argc, char *argv[]){
 
@@ -23,6 +21,7 @@ int main(int argc, char *argv[]){
     double start, end;
     start = omp_get_wtime();
 
+    //Initializing recursion
     for (int i = 0; i < N ; i++){
         queenPlaced[0] = i;
         result += search(queenPlaced, N, 1);
@@ -45,6 +44,7 @@ int search(int queenPlaced[], int N, int currentRow){
     }
 
     for (int i = 0; i < N ; i++){
+        //We create a sub-tree if we can place a queen here
         if(tryNewQueen(queenPlaced, currentRow, i)){
             newQueenPlaced[currentRow] = i;
             subResult += search(newQueenPlaced, N, currentRow+1);
@@ -55,30 +55,10 @@ int search(int queenPlaced[], int N, int currentRow){
 
 bool tryNewQueen(int queenPlaced[], int currentRow, int i){
     for (int j = 0; j < currentRow; j++){
-        if (queenPlaced[j] == i || fabs(j - currentRow) == fabs(queenPlaced[j] - i)){ //ici, on check si ya pas déjà une reine dans la colonne
+        //We create a sub-tree if there is no other queen in the same column of diagonal
+        if (queenPlaced[j] == i || fabs(j - currentRow) == fabs(queenPlaced[j] - i)){
             return false;
         }
     }
     return true;
-}
-
-
-
-//---------------- Debug functions ----------------//
-
-void showIntArray(int queenPlaced[], int N){ //temp
-    printf("[%d", queenPlaced[0]);
-    for (int i = 1; i < N; i++){
-        printf(",%d", queenPlaced[i]);
-    }
-    printf("]\n");
-}
-
-void test(){
-    printf("start test\n");
-    printf("true = %i\n", true);
-    printf("false = %i\n", false);
-    int queenPlaced[5] = {2,0,3,-1,-1};
-    printf("%i\n", tryNewQueen(queenPlaced, 3, 2));
-    printf("start test\n");
 }

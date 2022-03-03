@@ -13,7 +13,6 @@ int main(int argc, char *argv[]){
 
     //Initializing value
     int N = atoi(argv[1]);
-    int nbThread = atoi(argv[2]);
     int queenPlaced[N];
     for (int i = 0; i < N ; i++){
         queenPlaced[i] = -1;
@@ -24,18 +23,14 @@ int main(int argc, char *argv[]){
     double start, end;
     start = omp_get_wtime();
 
-    #pragma omp parallel num_threads (nbThread) private (queenPlaced)
-    {
-
-        #pragma omp for schedule (dynamic)
-        for (int i = 0; i < N; i++) {
-            queenPlaced[0] = i;
-            result += search(queenPlaced, N, 1);
-        }
+    for (int i = 0; i < N ; i++){
+        queenPlaced[0] = i;
+        result += search(queenPlaced, N, 1);
     }
+
     end = omp_get_wtime();
 
-    printf("time : %f", end - start);
+    printf("time : %f ", end - start);
     printf("result = %d\n", result);
 }
 

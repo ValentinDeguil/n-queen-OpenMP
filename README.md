@@ -1,9 +1,9 @@
-# n-queen
+# n-queen OpenMP
 Solving n-queen problem, tree-search, brute-force, sequential and parallel.
 
 
 
-To compile with openmp
+To compile with OpenMP
 ```cmd
     gcc -fopenmp queenSequetial.c
     gcc -fopenmp queenParallel.c

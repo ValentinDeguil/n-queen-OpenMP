@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <omp.h>
 
 int search(int queenPlaced[], int N, int currentRow);
 void showIntArray(int queenPlaced[], int N);
@@ -12,9 +13,7 @@ int main(int argc, char *argv[]){
 
     //Initializing value
     int N = atoi(argv[1]);
-    bool *boolCol, *boolRow;
-    boolCol = malloc(N*sizeof (bool));
-    boolRow = malloc(N*sizeof (bool));
+    int nbThread = atoi(argv[2]);
     int queenPlaced[N];
     for (int i = 0; i < N ; i++){
         queenPlaced[i] = -1;
@@ -22,14 +21,22 @@ int main(int argc, char *argv[]){
 
     //Starting algorithm
     int result = 0;
-    for (int i = 0; i < N ; i++){
-        queenPlaced[0] = i;
-        result += search(queenPlaced, N, 1);
-        //showIntArray(queenPlaced, N);
-    }
+    double start, end;
+    start = omp_get_wtime();
 
-    printf("result = %d", result);
-    //test();
+    #pragma omp parallel num_threads (nbThread) private (queenPlaced)
+    {
+
+        #pragma omp for schedule (dynamic)
+        for (int i = 0; i < N; i++) {
+            queenPlaced[0] = i;
+            result += search(queenPlaced, N, 1);
+        }
+    }
+    end = omp_get_wtime();
+
+    printf("time : %f", end - start);
+    printf("result = %d\n", result);
 }
 
 int search(int queenPlaced[], int N, int currentRow){
@@ -43,7 +50,7 @@ int search(int queenPlaced[], int N, int currentRow){
     }
 
     for (int i = 0; i < N ; i++){
-        if(tryNewQueen(queenPlaced, currentRow, i)){ //on teste de mettre en colonne i
+        if(tryNewQueen(queenPlaced, currentRow, i)){
             newQueenPlaced[currentRow] = i;
             subResult += search(newQueenPlaced, N, currentRow+1);
         }
